@@ -403,4 +403,4 @@ VALUES
 ('S009', 'CS501'),
 ('S010', 'CS501');
 
-select* from Users
+select* from --whatever
