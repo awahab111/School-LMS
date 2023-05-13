@@ -11,11 +11,25 @@ body {
     background-image: url("resources/1.jpg");
     background-repeat: no-repeat;
     background-size: cover;
-    background-position: center;
     margin: 0;
     padding: 0;
     height: 100vh;
+    position: center; /* Fixes the background in place */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1; /* Ensures the background stays behind the foreground */
 }
+
+.foreground {
+    /* Set the foreground properties */
+    position: relative;
+    z-index: 1; /* Ensures the foreground stays above the background */
+    /* Add any other desired styles for your foreground content */
+    overflow-y: scroll; /* Enable vertical scrolling for the foreground content */
+    height: 100vh; /* Set the height of the foreground to fit the viewport */
+  }
 
 .logo {
 position: absolute;
@@ -234,3 +248,24 @@ input[type="button"].buttoncs {
         background-color: rgba(255,255,255,0.3);
         color: black;
     }
+
+.data-table {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+th:first-child,
+td:first-child {
+  padding-right: 10px; /* Add right padding to the first column */
+}
