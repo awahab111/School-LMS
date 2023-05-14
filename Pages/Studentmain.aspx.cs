@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 
 public partial class Studentmain : System.Web.UI.Page
 {
+    protected Evaluation evaluation = new Evaluation();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -39,11 +43,160 @@ public partial class Studentmain : System.Web.UI.Page
 
             //Course
             course1_name.Text = Cname;
-            course1_code.Text = CID;  
+            course1_code.Text = CID;
             // Add more labels and display data accordingly
+
+            PopulateCourseDropdown();
+
         }
 
     }
+
+    private void PopulateEvaluationData()
+    {
+
+        // Find the table body element
+        HtmlTable table = (HtmlTable)FindControl("evaluationTable"); // Replace "evaluationTable" with the actual ID of the table
+
+        // Iterate over each row in the table body
+    }
+
+    private Evaluation GetEvaluationDataFromDatabase(string selectedCourse)
+    {
+        Evaluation evaluationdata = new Evaluation();
+        int userNum = Convert.ToInt32(Request.QueryString["userNum"]);
+
+        string connectionString = "Data Source=DESKTOP-ENSHTE4\\SQLEXPRESS;Initial Catalog=sms;Integrated Security=True";
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = "select AssignmentWeightage, QuizWeightage,FinalExamWeightage ,Sessional1Weightage, Sessional2Weightage, ProjectWeightage,CPWeightage from Evaluations where CourseID=@selectedCourse";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedCourse", selectedCourse);
+            command.Parameters.AddWithValue("@userNum", userNum);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                evaluationdata.AssignmentWeightage = reader["AssignmentWeightage"].ToString();
+                evaluationdata.QuizWeightage= reader["QuizWeightage"].ToString();
+                evaluationdata.FinalExamWeightage= reader["FinalExamWeightage"].ToString();
+                evaluationdata.Sessional1Weightage= reader["Sessional1Weightage"].ToString();
+                evaluationdata.Sessional2Weightage= reader["Sessional2Weightage"].ToString();
+                evaluationdata.ProjectWeightage= reader["ProjectWeightage"].ToString();
+                evaluationdata.CPWeightage= reader["CPWeightage"].ToString();
+            }
+            connection.Close();
+        }
+
+        return evaluationdata;
+    }
+
+    protected void EvaluationcourseDropdown_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string selectedCourse = evaluationCourseDropdown.SelectedItem.Text;
+        Evaluation evaluationdata = GetEvaluationDataFromDatabase(selectedCourse);
+        evaluation = evaluationdata;
+        // Update the attendanceContainer div with the attendance table
+
+    }
+
+    protected void AttendancecourseDropdown_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string selectedCourse = courseDropdown.SelectedItem.Text;
+        List<Attendance> attendanceData = GetAttendanceData(selectedCourse);
+        string attendanceTable = GenerateAttendanceTable(attendanceData);
+
+        // Update the attendanceContainer div with the attendance table
+        attendanceContainer.InnerHtml = attendanceTable;
+
+    }
+
+    private string GenerateAttendanceTable(List<Attendance> attendanceData)
+    {
+        // Generate the HTML markup for the attendance table dynamically
+        StringBuilder sb = new StringBuilder();
+
+        sb.Append("<table>");
+        sb.Append("<tr><th>Lecture No.</th><th>Duration</th><th>Date</th><th>Presence</th></tr>");
+
+        foreach (Attendance attendance in attendanceData)
+        {
+            sb.Append("<tr>");
+            sb.Append("<td>" + attendance.LectureNum + "</td>");
+            sb.Append("<td>" + attendance.Duration + "</td>");
+            sb.Append("<td>" + attendance.Date+ "</td>");
+            sb.Append("<td>" + attendance.presence + "</td>");
+            sb.Append("</tr>");
+        }
+        sb.Append("</table>");
+        return sb.ToString();
+    }
+
+
+
+
+
+    private List<Attendance> GetAttendanceData(string selectedCourse)
+    {
+        List<Attendance> attendanceData = new List<Attendance>();
+        int userNum = Convert.ToInt32(Request.QueryString["userNum"]);
+
+        string connectionString = "Data Source=DESKTOP-ENSHTE4\\SQLEXPRESS;Initial Catalog=sms;Integrated Security=True";
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = "select LectureNo, AttendanceDate, Duration,Presence from Attendance inner join Students on StudentID=roll_number where Students.roll_number = (select roll_number from Students where user_num = @userNum) AND CourseID = @selectedCourse";
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@selectedCourse", selectedCourse);
+            command.Parameters.AddWithValue("@userNum", userNum);
+
+            connection.Open();
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Attendance attendance = new Attendance();
+                attendance.LectureNum = reader["LectureNo"].ToString();
+                DateTime dobDateTime = Convert.ToDateTime(reader["AttendanceDate"]);
+                attendance.Date = dobDateTime.ToString("dd-MM-yyyy"); // Modify the format according to your preference
+                bool presence = (bool)reader["Presence"];
+                attendance.presence = presence ? "P" : "A";
+                attendance.Duration = reader["Duration"].ToString();
+
+                attendanceData.Add(attendance);
+            }
+            connection.Close();
+        }
+
+        return attendanceData;
+    }
+
+    private void PopulateCourseDropdown()
+    {
+        int userNum = Convert.ToInt32(Request.QueryString["userNum"]);
+        string connectionString = "Data Source=DESKTOP-ENSHTE4\\SQLEXPRESS;Initial Catalog=sms;Integrated Security=True";
+
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            string query = "SELECT CourseID FROM Enrollments INNER JOIN Students ON Students.roll_number = Enrollments.StudentID INNER JOIN Course ON Course.CourseCode = Enrollments.CourseID WHERE Students.roll_number = (SELECT roll_number FROM Students WHERE user_num = @userNum)";
+
+            SqlCommand command = new SqlCommand(query, connection);
+            command.Parameters.AddWithValue("@userNum", userNum);
+
+            connection.Open();
+
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                string courseName = reader["CourseID"].ToString();
+                evaluationCourseDropdown.Items.Add(courseName);
+                courseDropdown.Items.Add(courseName);
+            }
+
+            connection.Close();
+        }
+    }
+
+
 
     private List<Course> GetCoursesFromDatabase()
     {
@@ -256,3 +409,25 @@ public class Course
     public string CourseID { get; set; }
     public string CourseName { get; set; }
 }
+
+public class Attendance
+{
+    public string LectureNum { get; set; }
+    public string Date { get; set; }
+
+    public string Duration { get; set; }
+
+    public string presence { get; set; }
+}
+
+public class Evaluation
+{
+    public string AssignmentWeightage { get; set; }
+    public string QuizWeightage { get; set; }
+    public string FinalExamWeightage { get; set; }
+    public string Sessional1Weightage { get; set; }
+    public string Sessional2Weightage { get; set; }
+    public string ProjectWeightage { get; set; }
+    public string CPWeightage { get; set; }
+}
+

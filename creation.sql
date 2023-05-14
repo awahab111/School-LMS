@@ -18,6 +18,7 @@ CREATE TABLE Section (
 	batch int not null
 );
 
+
 create table Students (
 	roll_number VARCHAR(4) not null primary key,
 	first_name varchar(64),
@@ -81,7 +82,6 @@ CREATE TABLE Attendance (
     FOREIGN KEY (StudentID) REFERENCES Students(roll_number),
     FOREIGN KEY (CourseID) REFERENCES Course(CourseCode)
 );
-
 CREATE TABLE Marks (
     MarksID INT IDENTITY(1,1) PRIMARY KEY,
     StudentID VARCHAR(4),
@@ -107,6 +107,10 @@ CREATE TABLE Evaluations (
     CONSTRAINT CHK_Evaluations_Weightage CHECK (ProjectWeightage + CPWeightage + AssignmentWeightage + QuizWeightage + FinalExamWeightage + Sessional1Weightage + Sessional2Weightage = 100),
     FOREIGN KEY (CourseID) REFERENCES Course(CourseCode)
 );
+
+select AssignmentWeightage, QuizWeightage,FinalExamWeightage ,Sessional1Weightage, Sessional2Weightage, ProjectWeightage,CPWeightage from Evaluations where CourseID='CS101'
+
+
 
 CREATE TABLE Jobs (
     JobID INT IDENTITY(1,1) PRIMARY KEY,
@@ -266,11 +270,11 @@ VALUES
 --Attendance insertions
 INSERT INTO Attendance (StudentID, CourseID, LectureNo, AttendanceDate, Duration, Presence)
 VALUES 
-('S001', 'CS101', 1, '2023-05-01', 60, 1),
-('S002', 'CS201', 1, '2023-05-01', 60, 1),
-('S003', 'CS301', 1, '2023-05-01', 60, 0),
-('S004', 'CS401', 1, '2023-05-01', 60, 1),
-('S005', 'CS501', 1, '2023-05-01', 60, 1),
+('1234', 'CS101', 2, '2023-05-01', 60, 1);
+('1234', 'CS201', 1, '2023-05-01', 60, 1),
+('1234', 'CS301', 1, '2023-05-01', 60, 0),
+('1234', 'CS401', 1, '2023-05-01', 60, 1),
+('1234', 'CS501', 1, '2023-05-01', 60, 1);
 ('S006', 'CS601', 1, '2023-05-02', 60, 1),
 ('S007', 'CS701', 1, '2023-05-02', 60, 0),
 ('S008', 'CS801', 1, '2023-05-02', 60, 1),
@@ -392,15 +396,19 @@ VALUES
 --Enrollments insertions
 INSERT INTO Enrollments (StudentID, CourseID)
 VALUES
-('S001', 'CS101'),
+('1234', 'CS501');
+('1234', 'CS301'),
+('1234', 'CS401');
+('1234', 'CS101'),
 ('S002', 'CS101'),
-('S003', 'CS201'),
 ('S004', 'CS201'),
-('S005', 'CS301'),
 ('S006', 'CS301'),
 ('S007', 'CS401'),
-('S008', 'CS401'),
 ('S009', 'CS501'),
 ('S010', 'CS501');
+use sms 
+select CourseID, CourseName from Enrollments inner join students on Students.roll_number=Enrollments.StudentID inner join Course on Course.CourseCode=Enrollments.CourseID where Students.roll_number = (select roll_number from Students where user_num = 19)
+select LectureNo, AttendanceDate, Duration,Presence from Attendance inner join Students on StudentID=roll_number where Students.roll_number = (select roll_number from Students where user_num = 19) AND CourseID = 'CS101'
+select jobid from jobs where jobname = 'Software Engineer'
+SELECT * FROM USers
 
-select* from --whatever
