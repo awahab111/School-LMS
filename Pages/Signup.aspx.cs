@@ -47,7 +47,7 @@ public partial class Signup : System.Web.UI.Page
             }
             if (loginType == "f")
             {
-                Response.Redirect("AcademicRegistration.aspx");
+                Response.Redirect("FacultyRegistration.aspx");
             }
         }
         else
