@@ -108,10 +108,6 @@ CREATE TABLE Evaluations (
     FOREIGN KEY (CourseID) REFERENCES Course(CourseCode)
 );
 
-select AssignmentWeightage, QuizWeightage,FinalExamWeightage ,Sessional1Weightage, Sessional2Weightage, ProjectWeightage,CPWeightage from Evaluations where CourseID='CS101'
-
-
-
 CREATE TABLE Jobs (
     JobID INT IDENTITY(1,1) PRIMARY KEY,
     JobName VARCHAR(50) NOT NULL
@@ -137,10 +133,11 @@ CREATE TABLE Faculty (
 
 -- Relationship Between Sections and Faculty
 CREATE TABLE SectionsTeaching (
-    ID INT IDENTITY(1,1) PRIMARY KEY
+    ID INT IDENTITY(1,1) PRIMARY KEY,
 	SectionID INT,
     CourseID VARCHAR(10),
     InstructorID INT,
+	FOREIGN KEY (SectionID) REFERENCES Section(sectionID),
     FOREIGN KEY (InstructorID) REFERENCES Faculty(FacultyID),
     FOREIGN KEY (CourseID) REFERENCES Course(CourseCode)
 );
