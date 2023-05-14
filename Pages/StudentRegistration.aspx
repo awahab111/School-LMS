@@ -44,7 +44,7 @@
     </style>
 </head>
 <body>
-     <form id="studentreg" runat="server" style="width:1200px;height: 550px" >
+     <form id="studentreg" runat="server" style="width:1200px;height: 550px" class="form-login" >
         <h3>Student Registration</h3>
         <div class="form-container">
             <div class="form-group">
