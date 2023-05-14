@@ -37,7 +37,7 @@ public partial class StudentRegistration : System.Web.UI.Page
 
         if (rowsAffected > 0)
         {
-            Response.Redirect("Default.aspx");
+            Response.Redirect("Login.aspx");
         }
         else
         {

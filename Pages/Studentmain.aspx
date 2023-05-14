@@ -16,7 +16,7 @@
        .profile-container {
         font-family: 'Poppins', sans-serif;
         width: 1100px;
-        background-color: rgba(255, 255, 255, 0.13);
+        background-color: #0093dd45;
         border-radius: 10px;
         backdrop-filter: blur(50px);
         border: 2px solid rgba(255, 255, 255, 0.1);
@@ -61,11 +61,11 @@
             padding: 20px;
         }
         
-        .profile {
-            border: 1px solid #ccc;
-            padding: 0px;
-            margin-bottom: 0px;
-        }
+    .profile {
+        border: 1px solid #ccc;
+        padding: 0px;
+        margin-bottom: 0px;
+    }
 
     .profile-section {
         display: flex;
@@ -88,15 +88,24 @@
         margin-right: 60px;
     }
 
+    table {
+      border-collapse: separate;
+      border-spacing: 25px 50px ;
+    }   
+
+    tr {
+      margin-bottom: 5px; /* Add space between table rows */
+    }
+
     </style>
 </head>
-<body style="background-color: darkslategray;">
+<body style="background-color: #333c3e38; background-image:none;">
     <div class="sidebar">
         <img src="resources/logo.png" alt="Logo">
     </div>
 
     <div class="profile-container">
-        <h3 style="font-size: 32px">University Information</h3>
+        <h3 style="font-size: 32px">Student Information</h3>
         <br />
         <div class="profile-section">
             <div class="profile-info">
@@ -113,7 +122,7 @@
     </div>
 
     <div class="profile-container">
-        <h3 style="font-size: 32px">Courses</h3>
+        <h3 style="font-size: 32px">Registered Courses</h3>
         <br />
         <div class="profile-section">
             <div class="profile-info">
@@ -142,39 +151,96 @@
             </div>
         </div>
     </div>
-
+  <form runat="server" style="text-align:center">
     <div class="profile-container">
         <h3 style="font-size: 32px">Attendance</h3>
         <br />
         <div class="profile-section">
             <div class="profile-info">
-                <div style="display:flex;margin: 0 100px;">
-                    <p><span>Course Code:</span> <asp:Label ID="Label1" runat="server"></asp:Label></p>
-                    <p><span>Course Name:</span> <asp:Label ID="Label2" runat="server"></asp:Label></p>
+                <div style="display:flex;margin: 0 420px;">
+                        <div class="account-type" >
+                            <asp:DropDownList ID="courseDropdown" runat="server" AutoPostBack="True" OnSelectedIndexChanged="AttendancecourseDropdown_SelectedIndexChanged">
+                                        <asp:ListItem Text="Select a Course" Value=""></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
                 </div>
-                <div style="display:flex;margin: 0 100px;">
-                    <p><span>Course Code:</span> <asp:Label ID="Label3" runat="server"></asp:Label></p>
-                    <p><span>Course Name:</span> <asp:Label ID="Label4" runat="server"></asp:Label></p>
+               <div id="attendanceContainer" name="attendanceContainer" runat="server" style="text-align: center;">
+                    <!-- Attendance table will be displayed here -->
                 </div>
-                <div style="display:flex;margin: 0 100px;">
-                    <p><span>Course Code:</span> <asp:Label ID="Label5" runat="server"></asp:Label></p>
-                    <p><span>Course Name:</span> <asp:Label ID="Label6" runat="server"></asp:Label></p>
-                </div>
-                <div style="display:flex;margin: 0 100px;">
-                    <p><span>Course Code:</span> <asp:Label ID="Label7" runat="server"></asp:Label></p>
-                    <p><span>Course Name:</span> <asp:Label ID="Label8" runat="server"></asp:Label></p>
-                </div>
-                <div style="display:flex;margin: 0 100px;">
-                    <p><span>Course Code:</span> <asp:Label ID="Label9" runat="server"></asp:Label></p>
-                    <p><span>Course Name:</span> <asp:Label ID="Label10" runat="server"></asp:Label></p>
-                </div>
-
                 <!-- Add more labels here -->
             </div>
         </div>
     </div>
 
+     <div class="profile-container">
+        <h3 style="font-size: 32px">Course Evaluation</h3>
+        <br />
+        <div class="profile-section">
+            <div class="profile-info">
+                <div style="margin: 0 420px;">
+                        <div class="account-type" >
+                            <asp:DropDownList ID="evaluationCourseDropdown" runat="server" AutoPostBack="True" OnSelectedIndexChanged="EvaluationcourseDropdown_SelectedIndexChanged">
+                                        <asp:ListItem Text="Select a Course" Value=""></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
 
+                </div>
+               <div style="display:flex;margin: 0 100px;">
+                      <div class="data-table">
+                          <table id="evaluation-table" name="evaluation-table">
+                              <thead>
+                                  <tr>
+                                      <th>Evaluation Name</th>
+                                      <th>Weightage</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  <tr>
+                                      <td>Assignments</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.AssignmentWeightage %>" readonly></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Quiz</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.QuizWeightage %>" readonly></td>
+                                  </tr>
+                                   <tr>
+                                      <td>Project</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.ProjectWeightage %>" readonly></td>
+                                  </tr>
+                                   <tr>
+                                      <td>Class participation</td>
+                                      <td>
+                                          <input type="number"value="<%= evaluation.CPWeightage %>" readonly></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Sessional-I</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.Sessional1Weightage %>" readonly></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Sessional-II</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.Sessional2Weightage %>" readonly></td>
+                                  </tr>
+                                  <tr>
+                                      <td>Final exam</td>
+                                      <td>
+                                          <input type="number" value="<%= evaluation.FinalExamWeightage %>" readonly></td>
+                                  </tr>
+                                  <!-- Add more rows as needed -->
+                              </tbody>
+                          </table>
+                      </div>
+                   </div>
+                <!-- Add more labels here -->
+            </div>
+        </div>
+    </div>
+      <div style="height:50px"></div>
+</form>
 
     <!-- Add more profile containers if needed -->
 

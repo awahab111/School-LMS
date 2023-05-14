@@ -15,7 +15,7 @@
 <body style="height: 109vh;">
     <div class="background">
     </div>
-    <form style="height: 700px" id="formSignUp" runat="server">
+    <form class="form-login" style="height: 700px" id="formSignUp" runat="server">
         <h3 style="line-height: 22px;">Sign Up</h3>
 
         <label for="email">Email</label>

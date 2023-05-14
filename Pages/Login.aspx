@@ -16,7 +16,7 @@
     <div class="background"></div>
 
 
-    <form id="formLogin" runat="server">
+    <form class="form-login" id="formLogin" runat="server">
         <h3>Login</h3>
          <div id="popupImage" style="display: none; text-align:center; margin-top:10px">
             <img src="resources/among-us.gif" alt="Popup Image" style="width:50px; height:50px; align-self:center;">
