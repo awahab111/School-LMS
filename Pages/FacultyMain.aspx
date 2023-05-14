@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" AutoEventWireup="false" CodeFile="Faculty.aspx.vb" Inherits="_Default" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeFile="FacultyMain.aspx.cs" Inherits="FacultyMain" %>
 
 
     <!DOCTYPE html>
@@ -95,7 +95,7 @@
 
         </style>
     </head>
-    <body style="background-color: darkslategray;
+    <body style="background-color: darkslategray;">
        <div class="foreground">
         <div class="sidebar">
             <img src="resources/logo.png" alt="Logo">
@@ -112,16 +112,14 @@
                 </div>
             </div>
         </div>
+  <form runat="server" style="text-align:center">
 
         <div class="profile-container">
             <h3 style="font-size: 32px">Assigned Courses</h3>
             <br />
-            <div class="profile-section">
-                <div class="profile-info">
-                    <div style="display:flex;margin: 0 100px;">
-                        <p><span>Course Code:</span> <asp:Label ID="course1_code" runat="server"></asp:Label></p>
-                        <p><span>Course Name:</span> <asp:Label ID="course1_name" runat="server"></asp:Label></p>
-                    </div>
+            <div class="profile-section" >
+                <div class="profile-info" id="CourseContainer" name="CourseContainer" runat="server">
+                    
                    
 
                     <!-- Add more labels here -->
@@ -133,23 +131,22 @@
             <br />
 
             <center>
-                <div style="width: 150px;" class="account-type">
-                    <label for="account-type">Account Type:</label>
-                    <select id="account-type" name="account-type">
-                        <option value="" selected disabled>Select an option</option>
-                        <!-- Default option -->
-                        <option id="" value="s">Course_1</option>
-                        <option value="f">Course_2</option>
-                        <option value="a">Course_3</option>
-                    </select>
+                <div style="margin: 0 420px;">
+                        <div class="account-type" >
+                            <asp:DropDownList ID="evaluationCourseDropdown" runat="server" AutoPostBack="True" OnSelectedIndexChanged="EvaluationcourseDropdown_SelectedIndexChanged">
+                                        <asp:ListItem Text="Select a Course" Value=""></asp:ListItem>
+                            </asp:DropDownList>
+                        </div>
+
                 </div>
-            </center
+            </center>
 
             <br />
             
-                    <div style="display:flex;margin: 0 200px;">
+
+                    <div style="display:flex;margin: 0 100px;">
                       <div class="data-table">
-                          <table>
+                          <table id="evaluation-table" name="evaluationTable">
                               <thead>
                                   <tr>
                                       <th>Evaluation Name</th>
@@ -160,93 +157,80 @@
                                   <tr>
                                       <td>Assignments</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtAssignmentWeightage" runat="server" type="number" value="<%= evaluation.AssignmentWeightage %>"></td>
                                   </tr>
                                   <tr>
                                       <td>Quiz</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtQuizWeightage" runat="server" type="number" value="<%= evaluation.QuizWeightage %>" ></td>
                                   </tr>
                                    <tr>
                                       <td>Project</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtProjectWeightage" runat="server" type="number" value="<%= evaluation.ProjectWeightage %>" ></td>
                                   </tr>
                                    <tr>
                                       <td>Class participation</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtCPWeightage" runat="server" type="number" value="<%= evaluation.CPWeightage %>"></td>
                                   </tr>
                                   <tr>
                                       <td>Sessional-I</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtSessional1Weightage" runat="server" type="number" value="<%= evaluation.Sessional1Weightage %>" ></td>
                                   </tr>
                                   <tr>
                                       <td>Sessional-II</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtSessional2Weightage" runat="server" type="number" value="<%= evaluation.Sessional2Weightage %>"></td>
                                   </tr>
                                   <tr>
                                       <td>Final exam</td>
                                       <td>
-                                          <input type="number" value="10"></td>
+                                          <input id="txtFPWeightage" runat="server" type="number" value="<%= evaluation.FinalExamWeightage %>" ></td>
                                   </tr>
                                   <!-- Add more rows as needed -->
                               </tbody>
                           </table>
-                          <button id="saveEval">Save</button>
+                            <asp:Button ID="saveEval" runat="server" Text="Save" OnClick="btnSave_Click" CssClass="buttoncs" />
+
                       </div>
-
-
-                        <!-- Add more labels here -->
-  
-        </div>
+                   </div>
       </div>
            <div class="profile-container">
                <h3 style="font-size: 32px">Mark Attendance</h3>
 
                <div class="nextTo">
-                   <div style="width: 150px;" class="account-type">
+                   <div style="width: 160px;" class="account-type">
                        <label for="account-type">Lecture number</label>
                        <input style="width: 150px;" type="number" value="0"></td>
                    </div>
                    <div style="width: 50px"></div>
 
-                   <div style="width: 150px;" class="account-type">
+                   <div style="width: 160px;" class="account-type">
                        <label for="account-type">Course</label>
-                       <select id="account-type" name="account-type">
-                           <option value="" selected disabled>Select an option</option>
-                           <!-- Default option -->
-                           <option id="" value="s">Course_1</option>
-                           <option value="f">Course_2</option>
-                           <option value="a">Course_3</option>
-                       </select>
+                       <asp:DropDownList ID="coursedropdown" runat="server" AutoPostBack="True">
+                                        <asp:ListItem Text="Select a Course" Value=""></asp:ListItem>
+                            </asp:DropDownList>
                    </div>
 
                    <div style="width: 50px"></div>
-                   <div style="width: 150px;" class="account-type">
+                   <div style="width: 160px;" class="account-type">
                        <label for="account-type">Section</label>
-                       <select id="account-type" name="account-type">
-                           <option value="" selected disabled>Select an option</option>
-                           <!-- Default option -->
-                           <option id="" value="s">Course_1</option>
-                           <option value="f">Course_2</option>
-                           <option value="a">Course_3</option>
-                       </select>
+                            <asp:DropDownList ID="secitonsdrop" runat="server" AutoPostBack="True" OnSelectedIndexChanged="AttendancecourseDropdown_SelectedIndexChanged">
+                                        <asp:ListItem Text="Select a section" Value=""></asp:ListItem>
+                            </asp:DropDownList>
                    </div>
 
                    <div style="width: 50px"></div>
 
                    <div class="form-group" style="">
-                       <label for="dob">Date:</label>
-                       <input type="date" name="dob" required>
                    </div>
                </div>
 
 
 
-               <div style="height: 50px"></div>
+               <div style="margin-top:50px"></div>
 
                <div>
                    <table>
@@ -256,7 +240,7 @@
                                <th>Attendance Status</th>
                            </tr>
                        </thead>
-                       <tbody>
+                       <tbody id="AttendanceContainer" name="AttendanceContainer" runat="server">
                            <tr>
                                <td>John Doe</td>
                                <td>
@@ -283,8 +267,8 @@
 
                <br />
            </div>
-
-
+      </form>
+           </div>
            <!-- Add more profile containers if needed -->
 
     </body>
