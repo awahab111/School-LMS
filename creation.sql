@@ -126,32 +126,19 @@ CREATE TABLE AcademicOfficers (
     FOREIGN KEY (JobID) REFERENCES Jobs(JobID),
 	FOREIGN KEY (user_num) REFERENCES Users(UserID)
 );
-
 CREATE TABLE Faculty (
     FacultyID INT IDENTITY(1,1) PRIMARY KEY,
     FacultyName VARCHAR(50) NOT NULL,
     CNIC VARCHAR(15) NOT NULL,
     user_num INT, 
+	FacultyType VARCHAR(1),
 	FOREIGN KEY (user_num) REFERENCES Users (UserID)
-);
-
-CREATE TABLE CourseInstructor (
-	FacultyID INT PRIMARY KEY, 
-    is_coordinator INT,
-    Subject_Teaching VARCHAR(50) NOT NULL,
-    FOREIGN KEY (FacultyID) REFERENCES Faculty(FacultyID)
-);
-
-CREATE TABLE LabInstructor (
-	FacultyID INT PRIMARY KEY, 
-    Subject_Teaching VARCHAR(50) NOT NULL,
-    FOREIGN KEY (FacultyID) REFERENCES Faculty(FacultyID)
 );
 
 -- Relationship Between Sections and Faculty
 CREATE TABLE SectionsTeaching (
-    SectionID INT PRIMARY KEY,
-    SectionName VARCHAR(50),
+    ID INT IDENTITY(1,1) PRIMARY KEY
+	SectionID INT,
     CourseID VARCHAR(10),
     InstructorID INT,
     FOREIGN KEY (InstructorID) REFERENCES Faculty(FacultyID),
@@ -338,9 +325,9 @@ VALUES
     ('Olivia Lee', 3, '0123456789012', 10);
 
 --Faculty insertions
-INSERT INTO Faculty (FacultyName, CNIC, user_num)
+INSERT INTO Faculty (FacultyName, CNIC, user_num, FacultyType)
 VALUES
-('John Doe', '1234567890123', 1),
+('John Doe', '1234567890123', 1, 'L');
 ('Jane Doe', '1234567890124', 2),
 ('Bob Smith', '1234567890125', 3),
 ('Alice Johnson', '1234567890126', 4),
@@ -380,9 +367,9 @@ VALUES
 (10, 'Cybersecurity Lab');
 
 --SectionsTeaching insertions
-INSERT INTO SectionsTeaching (SectionID, SectionName, CourseID, InstructorID)
+INSERT INTO SectionsTeaching (SectionID, CourseID, InstructorID)
 VALUES
-(1, 'Section A', 'CS101', 1),
+(1, 'CS101', 13);
 (2, 'Section B', 'CS201', 2),
 (3, 'Section A', 'CS301', 3),
 (4, 'Section B', 'CS401', 4),
@@ -411,4 +398,9 @@ select CourseID, CourseName from Enrollments inner join students on Students.rol
 select LectureNo, AttendanceDate, Duration,Presence from Attendance inner join Students on StudentID=roll_number where Students.roll_number = (select roll_number from Students where user_num = 19) AND CourseID = 'CS101'
 select jobid from jobs where jobname = 'Software Engineer'
 SELECT * FROM USers
-
+select * from Faculty
+select CourseID from SectionsTeaching where InstructorID = (select facultyID from Faculty where user_num = 28)
+update Evaluations Set AssignmentWeightage = '10' 
+select FacultyName, Cnic from Faculty where user_num = 28
+select CourseName, CourseID, SectionID from SectionsTeaching inner join course on Course.CourseCode=CourseID where InstructorID = (select facultyID from Faculty where user_num = 28)
+UPDATE Evaluations SET AssignmentWeightage = '10', QuizWeightage = '20',FinalExamWeightage = '30', Sessional1Weightage = '5', Sessional2Weightage = '5',  ProjectWeightage = '15', CPWeightage = '15' WHERE CourseID = 'CS101';
